@@ -2,28 +2,48 @@
 Django Template Previewer
 =========================
 
-The Django template language is really great, but the life of a
-template designer isn't so easy. In order to be able to view if her
-newly designed template set is working, she must have
+The Django template language is really great. However, it is not so
+easy for a Designer to use it for prototyping, because in order to see
+the templates rendered you need a functioning Django project. This may
+not be practical for several reasons:
 
- * A working Django installation
+ * The designer may be using an OS not supported by a library on which
+   the project depends on.
 
- * A correctly setup and working Django project (which means having
-   views putting correct types of objects in the context, etc.).
+ * Bugs in the model and view code will scare the designer.
 
-Not much can be done about the former problem, but the second one
-should be fairly easy to deal with, and this is the aim of this
-project. It consists in its main part of a view allowing to render
-templates with the context populated with data from a yaml file.
+ * The designer will be at times blocked by the programmer.
+
+ * etc.
+
+Django Template Previewer tries to solve some of these problems:
+
+ * You can browse a list of available templates
+
+ * Fully render a template, with inheritance and stuff
+
+ * Populate the context of the template with some mock data (which is
+   stored in a YAML file).
+
+ * You can do all this without any serious knowledge of Python (and
+   the installation is quite straightforward).
+
 
 -------------------------
 Installation
 -------------------------
 
- $ python setup.py install
+ $ python previewer/setup.py install
 
-... or just copy the folder ``previewer`` someplace Python will be
-able to see it.
+or
+
+ $ easy_install previewer
+
+The latter will also take care of the dependencies (at the moment,
+only PyYAML).
+
+Alternatively, you can just copy the folder ``previewer`` someplace
+Python will be able to see it.
 
 -------------------------
 Settings
@@ -49,4 +69,44 @@ your project (I use the prefix templates, so my ``urls.py`` looks like
                        ...
                        )
 
-More to come...
+).
+------------
+Template fix
+------------
+
+A template fix is simply a YAML file which contains a mapping between
+template files and the context we want to pass them. For example:::
+
+    404.html:
+      _inherits:
+        - blog/base.html
+        - foo
+      domain: example.com
+      text: we are very sorry
+
+    500.html:
+      _inherits:
+        - 404.html
+      v: 2
+
+    blog/base.html:
+       c: c
+       d: d
+
+If a template file name is not included in this mapping, it will be
+passed an empty dictionary as additional context. Each file may have a
+magical property, ``_inherits``. It should contain a list of file
+names (though the app will try to do The Right Thing if you give it
+just a string). The context will be augmented with values from all the
+ancestors. Values from defined explicitly always take precedence over inherited values.
+
+Note that not all fields must have keys naming existing files. It
+would be perfectly OK to have a field named ``"error"`` or something
+like that, just for inheritance.
+
+--------
+Usage
+--------
+
+Just browse the url under which you included the url
+configuration. Choose a template you want to see and click it.
