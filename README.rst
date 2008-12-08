@@ -70,6 +70,7 @@ your project (I use the prefix templates, so my ``urls.py`` looks like
                        )
 
 ).
+
 ------------
 Template fix
 ------------
