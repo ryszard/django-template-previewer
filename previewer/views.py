@@ -3,7 +3,7 @@ from django.views.generic.simple import direct_to_template
 from django.conf import settings
 import yaml
 
-special = ['_inherits']
+special = ['_extends']
 
 class FixError(Exception): pass
 
@@ -20,7 +20,7 @@ def get_fixes(the_yaml, template):
         return context
     else:
         try:
-            inheritance_list = our_fixes['_inherits']
+            inheritance_list = our_fixes['_extends']
         except KeyError:
             pass
         else:

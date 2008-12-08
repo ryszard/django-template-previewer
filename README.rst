@@ -79,14 +79,14 @@ A template fix is simply a YAML file which contains a mapping between
 template files and the context we want to pass them. For example:::
 
     404.html:
-      _inherits:
+      _extends:
         - blog/base.html
         - foo
       domain: example.com
       text: we are very sorry
 
     500.html:
-      _inherits:
+      _extends:
         - 404.html
       v: 2
 
@@ -96,10 +96,15 @@ template files and the context we want to pass them. For example:::
 
 If a template file name is not included in this mapping, it will be
 passed an empty dictionary as additional context. Each file may have a
-magical property, ``_inherits``. It should contain a list of file
-names (though the app will try to do The Right Thing if you give it
-just a string). The context will be augmented with values from all the
-ancestors. Values from defined explicitly always take precedence over inherited values.
+magical property, ``_extends``. It should contain a list of file names
+(though the app will try to do The Right Thing if you give it just a
+string). The context will be augmented with values from all the
+ancestors. Values defined explicitly always take precedence over
+inherited values.
+
+NOTE: extending is not transitive, i.e. even if `A` extends `B` and
+`B` extends `C`, `A` doesn't automatically extend `C`. You have to
+specify all extended fixes explicitly.
 
 Note that not all fields must have keys naming existing files. It
 would be perfectly OK to have a field named ``"error"`` or something
